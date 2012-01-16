@@ -17,22 +17,21 @@
 		http://www.springframework.org/schema/data/jpa
 		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-	<!-- persistence -->
-    <mongo:mongo host="localhost" port="27017" />
-    
-    <mongo:db-factory dbname="PatientRegistrar" mongo-ref="mongo"/>
-
-	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-		<constructor-arg ref="mongo" />
-		<constructor-arg value="PatientRegistrar" />
-	</bean>
-     
-    <mongo:repositories base-package="com.patientregistrar.persistence.mongodb" />
+	<!-- jdbc -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="url" value="jdbc:mysql://localhost/patientRegistrar" />	
+		<property name="poolPreparedStatements"><value>true</value></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="50" />
+		<property name="username" value="root" />				
+		<property name="password" value="password" />
+	</bean>	
     
     <!-- spring & spring mvc -->
     <mvc:annotation-driven />
     
-    <context:component-scan base-package="com.patientregistrar.control"/>
+    <context:component-scan base-package="com.patientregistrar.control,com.patientregistrar.persistence.jdbc"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     	<property name="basename" value="/WEB-INF/messages" />      		
