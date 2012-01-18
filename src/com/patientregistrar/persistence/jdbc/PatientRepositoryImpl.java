@@ -17,7 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.patientregistrar.domain.Address;
+import com.patientregistrar.domain.BasicPerson;
+import com.patientregistrar.domain.Employer;
 import com.patientregistrar.domain.Patient;
+import com.patientregistrar.domain.Person;
 import com.patientregistrar.persistence.mongodb.PatientRepository;
 
 @Component
@@ -28,6 +32,12 @@ public class PatientRepositoryImpl implements PatientRepository {
 	private static final String SQL_INSERT_EMPLOYER = "insert into employer( name, phoneNumber, addressLine1, addressLine2, city, state, zip ) values (?,?,?,?,?,?,?);";
 
 	private static final String SQL_INSERT_PERSON = "insert into person ( firstName, lastName, middleInitial, phoneNumber, dateOfBirth, ssn, addressLine1, addressLine2, city, state, zip, insuranceThruSelf, insuranceSourceId, employerid, emergencyContactid1, emergencyContactid2 ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+	
+	private static final String SQL_GET_ONE_PERSON = "select * from person where personid = ?";
+	
+	private static final String SQL_GET_ONE_ER_CONTACT = "select * from emergencycontact where emergencyContactId = ?";
+	
+	private static final String SQL_GET_ONE_EMPLOYER = "select * from employer where employerid = ?";
 	
 	private static final Logger LOGGER = Logger.getLogger(PatientRepositoryImpl.class);
 
@@ -89,12 +99,147 @@ public class PatientRepositoryImpl implements PatientRepository {
 	}
 
 	@Override
-	public Patient findOne(String arg0) {
-		throw new UnimplementedException();
+	public Patient findOne(String id) {
+		Patient patient = null;
+		try(Connection c = dataSource.getConnection(); PreparedStatement psPerson = c.prepareStatement(SQL_GET_ONE_PERSON)) {
+					
+			psPerson.setInt(1, Integer.valueOf(id));
+			ResultSet rs = psPerson.executeQuery();
+			boolean exists = rs.next();
+			if(!exists) {
+				return patient;
+			}
+			
+			patient = new Patient();
+			patient.setAddress(new Address());
+			patient.getAddress().setAddressLine1(rs.getString("addressLine1"));
+			patient.getAddress().setAddressLine2(rs.getString("addressLine2"));
+			patient.getAddress().setCity(rs.getString("city"));
+			patient.getAddress().setState(rs.getString("state"));
+			patient.getAddress().setZip(rs.getString("zip"));
+			patient.setDateOfBirth(rs.getDate("dateOfBirth"));
+			patient.setEmergencyContact1(fetchEmergencyContact(rs.getInt("emergencyContactid1")));
+			patient.setEmergencyContact2(fetchEmergencyContact(rs.getInt("emergencyContactid2")));
+			patient.setEmployer(fetchEmployer(rs.getInt("employerid")));
+			patient.setFirstName(rs.getString("firstName"));
+			patient.setId(id);			
+			patient.setInsuranceThroughSelf(rs.getBoolean("insuranceThruSelf"));
+			if(!patient.getInsuranceThroughSelf()) {
+				patient.setInsuranceSource(fetchInsuranceSource(rs.getInt("insuranceSourceId")));
+			}
+			patient.setLastName(rs.getString("lastname"));
+			patient.setMiddleInitial(rs.getString("middleInitial").charAt(0));
+			patient.setPhoneNumber(rs.getString("phoneNumber"));
+			patient.setSsn(rs.getString("ssn"));
+			
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}
+		return patient;
+	}
+	
+	private Person fetchInsuranceSource(int id) {
+		Person person = null;
+		
+		try(Connection c = dataSource.getConnection(); PreparedStatement psPerson = c.prepareStatement(SQL_GET_ONE_PERSON)) {
+			
+			psPerson.setInt(1, id);
+			ResultSet rs = psPerson.executeQuery();
+			boolean exists = rs.next();
+			if(!exists) {
+				return person;
+			}
+
+			person = new Person();
+			person.setAddress(new Address());
+			person.getAddress().setAddressLine1(rs.getString("addressLine1"));
+			person.getAddress().setAddressLine2(rs.getString("addressLine2"));
+			person.getAddress().setCity(rs.getString("city"));
+			person.getAddress().setState(rs.getString("state"));
+			person.getAddress().setZip(rs.getString("zip"));
+			person.setDateOfBirth(rs.getDate("dateOfBirth"));
+			person.setEmployer(fetchEmployer(rs.getInt("employerid")));
+			person.setFirstName(rs.getString("firstName"));
+			person.setLastName(rs.getString("lastname"));
+			person.setMiddleInitial(rs.getString("middleInitial").charAt(0));
+			person.setPhoneNumber(rs.getString("phoneNumber"));
+			person.setSsn(rs.getString("ssn"));
+
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}		
+		
+		return person;
+	}
+	
+	private BasicPerson fetchEmergencyContact(int id) {
+		BasicPerson contact = null;
+		
+		try(Connection c = dataSource.getConnection(); PreparedStatement psContact = c.prepareStatement(SQL_GET_ONE_ER_CONTACT)) {
+			
+			psContact.setInt(1, id);
+			ResultSet rs = psContact.executeQuery();
+			boolean exists = rs.next();
+			if(!exists) {
+				return contact;
+			}
+
+			contact = new BasicPerson();
+			contact.setFirstName(rs.getString("firstName"));
+			contact.setLastName(rs.getString("lastName"));
+			contact.setMiddleInitial(rs.getString("middleInitial").charAt(0));
+			contact.setPhoneNumber(rs.getString("phoneNumber"));
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}
+		
+		return contact;
+	}
+	
+	private Employer fetchEmployer(int id) {
+		Employer employer = null;
+		
+		try(Connection c = dataSource.getConnection(); PreparedStatement psEmployer = c.prepareStatement(SQL_GET_ONE_EMPLOYER)) {
+			
+			psEmployer.setInt(1, id);
+			ResultSet rs = psEmployer.executeQuery();
+			boolean exists = rs.next();
+			if(!exists) {
+				return employer;
+			}
+
+			employer = new Employer();
+			employer.setName(rs.getString("name"));
+			employer.setPhoneNumber(rs.getString("phoneNumber"));
+			employer.setAddress(new Address());
+			employer.getAddress().setAddressLine1(rs.getString("addressLine1"));
+			employer.getAddress().setAddressLine2(rs.getString("addressLine2"));
+			employer.getAddress().setCity(rs.getString("city"));
+			employer.getAddress().setState(rs.getString("state"));
+			employer.getAddress().setZip(rs.getString("zip"));			
+			
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}
+		
+		return employer;
+		
 	}
 
 	@Override
-	public Patient save(Patient patient) {
+	public Patient save(Patient patient) {		
+		if(patient.getId() != null) {
+			return update(patient);
+		} else {
+			return insert(patient);
+		}
+	}
+
+	private Patient insert(Patient patient) {
 		try(Connection c = dataSource.getConnection(); 
 				PreparedStatement psEmergency = c.prepareStatement(SQL_INSERT_EMERGENCY_CONTACT,Statement.RETURN_GENERATED_KEYS);
 				PreparedStatement psEmployer = c.prepareStatement(SQL_INSERT_EMPLOYER,Statement.RETURN_GENERATED_KEYS); 
@@ -135,6 +280,20 @@ public class PatientRepositoryImpl implements PatientRepository {
 			
 			int insuranceSourceId = 0;
 			if(!patient.getInsuranceThroughSelf()) {				
+				
+				psEmployer.clearParameters();
+				psEmployer.setString(1, patient.getInsuranceSource().getEmployer().getName());
+				psEmployer.setString(2, patient.getInsuranceSource().getEmployer().getPhoneNumber());
+				psEmployer.setString(3, patient.getInsuranceSource().getEmployer().getAddress().getAddressLine1());
+				psEmployer.setString(4, patient.getInsuranceSource().getEmployer().getAddress().getAddressLine2());
+				psEmployer.setString(5, patient.getInsuranceSource().getEmployer().getAddress().getCity());
+				psEmployer.setString(6, patient.getInsuranceSource().getEmployer().getAddress().getState());
+				psEmployer.setString(7, patient.getInsuranceSource().getEmployer().getAddress().getZip());
+				psEmployer.executeUpdate();
+				rs = psEmployer.getGeneratedKeys();
+				rs.next();
+				int insuranceEmployerId = rs.getInt(1);				
+				
 				psPerson.setString(1, patient.getInsuranceSource().getFirstName());
 				psPerson.setString(2, patient.getInsuranceSource().getLastName());
 				psPerson.setString(3, String.valueOf(patient.getInsuranceSource().getMiddleInitial()));
@@ -148,13 +307,13 @@ public class PatientRepositoryImpl implements PatientRepository {
 				psPerson.setString(11, patient.getInsuranceSource().getAddress().getZip());
 				psPerson.setBoolean(12, true);
 				psPerson.setNull(13, Types.INTEGER);
-				psPerson.setNull(14, Types.INTEGER);
+				psPerson.setInt(14, insuranceEmployerId);
 				psPerson.setNull(15, Types.INTEGER);
 				psPerson.setNull(16, Types.INTEGER);
 				psPerson.executeUpdate();
 				rs = psPerson.getGeneratedKeys();
 				rs.next();
-				insuranceSourceId = rs.getInt(1);				
+				insuranceSourceId = rs.getInt(1);
 			}			
 			
 			psPerson.clearParameters();
@@ -180,13 +339,21 @@ public class PatientRepositoryImpl implements PatientRepository {
 			psPerson.setInt(16, emergencyContactId2);
 			psPerson.executeUpdate();
 			
+			rs = psPerson.getGeneratedKeys();
+			rs.next();
+			patient.setId(String.valueOf(rs.getInt(1)));			
+			
 			c.commit();
 			
 		} catch(SQLException sqle) {
 			LOGGER.error(sqle, sqle);
 			throw new RuntimeException(sqle);
 		}
-		return patient;
+		return patient;		
+	}
+
+	private Patient update(Patient patient) {
+		throw new UnimplementedException();
 	}
 
 	@Override

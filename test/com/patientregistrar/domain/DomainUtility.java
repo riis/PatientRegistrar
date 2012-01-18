@@ -53,8 +53,8 @@ public class DomainUtility {
 		Patient patient = new Patient();
 		patient.setAddress(makeFakeAddress());
 		patient.setDateOfBirth(new Date());		
-		patient.setEmergencyContact1(makeFakePerson());
-		patient.setEmergencyContact2(makeFakePerson());
+		patient.setEmergencyContact1(makeFakeBasicPerson());
+		patient.setEmergencyContact2(makeFakeBasicPerson());
 		patient.setEmployer(makeFakeEmployer());
 		patient.setFirstName(RandomStringUtils.randomAlphanumeric(20));
 		patient.setInsuranceSource(makeFakePerson());
@@ -81,7 +81,7 @@ public class DomainUtility {
 
 	/**
 	 * Makes a fake Person
-	 * @return A fabricated employer made of random data
+	 * @return A fabricated person made of random data
 	 * @see #makeFakeAddress()
 	 * @see #makeFakeEmployer()
 	 */
@@ -96,6 +96,19 @@ public class DomainUtility {
 		person.setPhoneNumber(RandomStringUtils.randomNumeric(10));
 		person.setSsn(RandomStringUtils.randomNumeric(9));		
 		return person;
+	}
+	
+	/**
+	 * Makes a fake BasicPerson
+	 * @return A fabricated basic person made of random data
+	 */
+	public static BasicPerson makeFakeBasicPerson() {
+		BasicPerson person = new BasicPerson();
+		person.setFirstName(RandomStringUtils.randomAlphanumeric(20));
+		person.setLastName(RandomStringUtils.randomAlphanumeric(20));
+		person.setMiddleInitial(RandomStringUtils.randomAlphanumeric(1).charAt(0));
+		person.setPhoneNumber(RandomStringUtils.randomNumeric(10));
+		return person;		
 	}
 	
 	/**
