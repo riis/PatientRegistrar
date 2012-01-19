@@ -18,7 +18,7 @@ import com.patientregistrar.domain.Patient;
 
 /**
  * <p>
- * The test class <code>PatientRepositoryTest</code> shows how to use the Spring Data MongoDB API for a collections of domain objects.
+ * The integration test class <code>PatientRepositoryTest</code> shows how to use the Spring Data MongoDB API for a collections of domain objects.
  * </p><p>
  * Specifically, it shows how to use 
  * <a href="http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/package-summary.html">Repository Interfaces</a> 

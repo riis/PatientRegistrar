@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -39,6 +40,16 @@ public class PatientRepositoryImpl implements PatientRepository {
 	
 	private static final String SQL_GET_ONE_EMPLOYER = "select * from employer where employerid = ?";
 	
+	private static final String SQL_DELETE_EMPLOYER = "delete from employer where employerid = ?";
+	
+	private static final String SQL_DELETE_PERSON = "delete from person where personid = ?";
+	
+	private static final String SQL_DELETE_ER_CONTACT = "delete from emergencycontact where emergencyContactid = ?";
+	
+	private static final String SQL_GET_DELETE_IDS = "select insuranceSourceId, employerid, emergencyContactid1, emergencyContactid2 from person where personid = ?";
+	
+	private static final String SQL_FIND_BY_LASTNAME = "select personid from person where upper(lastname) like ?";
+	
 	private static final Logger LOGGER = Logger.getLogger(PatientRepositoryImpl.class);
 
 	@Autowired
@@ -59,8 +70,12 @@ public class PatientRepositoryImpl implements PatientRepository {
 	}
 
 	@Override
-	public List<Patient> save(Iterable<? extends Patient> arg0) {
-		throw new UnimplementedException();
+	public List<Patient> save(Iterable<? extends Patient> patients) {
+		List<Patient> savedPatients = new ArrayList<Patient>();
+		for(Patient patient : patients) {
+			savedPatients.add(save(patient));
+		}
+		return savedPatients;
 	}
 
 	@Override
@@ -74,18 +89,79 @@ public class PatientRepositoryImpl implements PatientRepository {
 	}
 
 	@Override
-	public void delete(String arg0) {
-		throw new UnimplementedException();
+	public void delete(String id) {		
+		try(Connection c = dataSource.getConnection(); 
+				PreparedStatement psContact = c.prepareStatement(SQL_DELETE_ER_CONTACT); 
+				PreparedStatement psEmployer = c.prepareStatement(SQL_DELETE_EMPLOYER); 
+				PreparedStatement psPerson = c.prepareStatement(SQL_DELETE_PERSON);
+				PreparedStatement psLookupIds = c.prepareStatement(SQL_GET_DELETE_IDS)) {
+			
+			c.setAutoCommit(false);			
+			int personId = Integer.valueOf(id);
+			
+			psLookupIds.setInt(1, personId);
+			ResultSet rs = psLookupIds.executeQuery();
+			rs.next();
+			Integer insuranceSourceId = rs.getInt("insuranceSourceId");
+			int employerid = rs.getInt("employerid");
+			int emergencyContactid1 = rs.getInt("emergencyContactid1");
+			int emergencyContactid2 = rs.getInt("emergencyContactid2");
+			
+			if(insuranceSourceId != null) {
+				psLookupIds.clearParameters();
+				psLookupIds.setInt(1, personId);
+				rs = psLookupIds.executeQuery();
+				rs.next();
+				int altemergencyContactid1 = rs.getInt("emergencyContactid1");
+				int altemergencyContactid2 = rs.getInt("emergencyContactid2");
+
+				psPerson.clearParameters();
+				psPerson.setInt(1, personId);
+				psPerson.executeUpdate();				
+				
+				psContact.clearParameters();
+				psContact.setInt(1, altemergencyContactid1);
+				psContact.executeUpdate();
+
+				psContact.clearParameters();
+				psContact.setInt(1, altemergencyContactid2);
+				psContact.executeUpdate();
+			}			
+			
+			psPerson.clearParameters();
+			psPerson.setInt(1, personId);
+			psPerson.executeUpdate();			
+			
+			psContact.clearParameters();
+			psContact.setInt(1, emergencyContactid1);
+			psContact.executeUpdate();
+			
+			psContact.clearParameters();
+			psContact.setInt(1, emergencyContactid2);
+			psContact.executeUpdate();
+					
+			psEmployer.clearParameters();
+			psEmployer.setInt(1,employerid);
+			psEmployer.executeUpdate();
+						
+			c.commit();
+			
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}
 	}
 
 	@Override
-	public void delete(Patient arg0) {
-		throw new UnimplementedException();
+	public void delete(Patient patient) {
+		delete(patient.getId());
 	}
 
 	@Override
-	public void delete(Iterable<? extends Patient> arg0) {
-		throw new UnimplementedException();
+	public void delete(Iterable<? extends Patient> patients) {
+		for(Patient patient : patients) {
+			delete(patient.getId());
+		}
 	}
 
 	@Override
@@ -94,8 +170,15 @@ public class PatientRepositoryImpl implements PatientRepository {
 	}
 
 	@Override
-	public boolean exists(String arg0) {
-		throw new UnimplementedException();
+	public boolean exists(String id) {
+		try(Connection c = dataSource.getConnection(); PreparedStatement psPerson = c.prepareStatement(SQL_GET_ONE_PERSON)) {
+			psPerson.setInt(1, Integer.valueOf(id));
+			ResultSet rs = psPerson.executeQuery();
+			return rs.next();			
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}
 	}
 
 	@Override
@@ -353,12 +436,24 @@ public class PatientRepositoryImpl implements PatientRepository {
 	}
 
 	private Patient update(Patient patient) {
-		throw new UnimplementedException();
+		delete(patient.getId());
+		return insert(patient);
 	}
 
 	@Override
 	public List<Patient> findByLastName(String lastname) {
-		throw new UnimplementedException();
+		List<Patient> patients = new ArrayList<Patient>();		
+		try(Connection c = dataSource.getConnection(); PreparedStatement psFind = c.prepareStatement(SQL_FIND_BY_LASTNAME)) {
+			psFind.setString(1, lastname.toUpperCase());
+			ResultSet rs = psFind.executeQuery();
+			while(rs.next()) {
+				patients.add(findOne(String.valueOf(rs.getInt("personid"))));
+			}
+		} catch(SQLException sqle) {
+			LOGGER.error(sqle, sqle);
+			throw new RuntimeException(sqle);
+		}		
+		return patients;
 	}
 
 }
