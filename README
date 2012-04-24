@@ -1,17 +1,17 @@
-You need a locally running instance of MongoDB and / or MySQL to get the integration tests and web application to function properly.
+You need a locally running instance of MongoDB and / or MySQL to get the integration tests and web application to run properly.
 
 MongoDB server is very small. Don't be intimidated. You can download MongoDB @
 http://www.mongodb.org/ 
 
-MySQL is also a small footprint database installation available @
+MySQL is also a small relational database; installation available @
 http://www.mysql.com/
 
-To make the application run on a local installation of MongoDB: 
+To run the web application on a local installation of MongoDB: 
 1) Copy the file WebContent/WEB-INF/mongodb/partient-registrar-servlet.xml to the WebContent/WEB-INF directory
 2) Start the MongoDB host process (bin/mongod.exe in the MongoDB installation directory)
 3) Start JEE server
 
-To make the application run on a local installation of MySQL:
+To run the web application on a local installation of MySQL:
 1) Copy the file WebContent/WEB-INF/mysql/partient-registrar-servlet.xml to the WebContent/WEB-INF directory
 2) Start MySQL
 3) Execute the DDL @ WebContent/WEB-INF/mysql/mysql.ddl
