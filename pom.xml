@@ -65,7 +65,17 @@
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 		</dependency>		
-            		
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+                        		
 		<!-- misc -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
