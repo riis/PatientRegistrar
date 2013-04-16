@@ -34,20 +34,30 @@ public class MultiplePatientTest {
 	private static final Logger LOGGER = Logger.getLogger(MultiplePatientTest.class);
 	
 	@Resource
-	private PatientRepositoryMongo patientRepositoryJdbc;
+	private PatientRepository patientRepositoryJdbc;
 
 	@Resource
-	private PatientRepositoryMongo patientRepositoryMongo;		
+	private PatientRepository patientRepository;		
 		
 	/**
 	 * Tests finding, persistence, and deletion of multiple patients.
 	 * Find by last name uses Spring's "query methods" in the repository interface.
 	 */
 	@Test
-	public void testMultiplePatients() {
-		
-		PatientRepositoryMongo repository = patientRepositoryMongo; // TODO: this
-		
+	public void testMultiplePatientsMongoDB() {		
+		test(patientRepository);
+	}	
+	
+	/**
+	 * Tests finding, persistence, and deletion of multiple patients.
+	 * Find by last name uses Spring's "query methods" in the repository interface.
+	 */
+	@Test
+	public void testMultiplePatientsJDBC() {		
+		test(patientRepositoryJdbc);
+	}		
+
+	private void test(PatientRepository repository) {
 		List<Patient> patients = makeThreePatients();
 		repository.save(patients);
 		LOGGER.debug("Persisted three patients: " + patients);
@@ -60,8 +70,7 @@ public class MultiplePatientTest {
 		
 		repository.delete(patients);
 		patients = repository.findByLastName("PatientRegistrar");
-		LOGGER.debug("Deleted 3 patients");
+		LOGGER.debug("Deleted 3 patients");		
 	}	
-	
 	
 }

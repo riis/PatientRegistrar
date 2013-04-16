@@ -10,10 +10,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.patientregistrar.domain.Patient;
-import com.patientregistrar.persistence.mongodb.PatientRepositoryMongo;
+import com.patientregistrar.persistence.mongodb.PatientRepository;
 
 /**
  * <p>
@@ -28,10 +29,10 @@ public class NewPatientEntryController {
 	private static final Logger LOGGER = Logger.getLogger(NewPatientEntryController.class);
 	
 	@Resource
-	private PatientRepositoryMongo patientRepositoryJdbc;
+	private PatientRepository patientRepositoryJdbc;
 
 	@Resource
-	private PatientRepositoryMongo patientRepositoryMongo;			
+	private PatientRepository patientRepository;			
 	
 	@RequestMapping(value = "/register.htm",method = RequestMethod.GET)
 	public ModelAndView displayLandingPage() {
@@ -40,7 +41,8 @@ public class NewPatientEntryController {
 	}
 
 	@RequestMapping(value = "/register.htm",method = RequestMethod.POST)
-	public ModelAndView register(@Valid @ModelAttribute("newpatient") Patient patient, BindingResult binding, ModelMap model) {
+	public ModelAndView register(@Valid @ModelAttribute("newpatient") Patient patient, BindingResult binding, ModelMap model, 
+			@RequestParam(required=false) boolean jdbc) {
 		LOGGER.info("received a request to register a new patient");
 		LOGGER.debug(patient);
 		
@@ -52,11 +54,19 @@ public class NewPatientEntryController {
 			LOGGER.warn(binding.getAllErrors());
 			return new ModelAndView("register",model);
 		}
-		
-		PatientRepositoryMongo repository = patientRepositoryMongo; // TODO: this
-		repository.save(patient);
+				
+		determineRepository(jdbc).save(patient);
 		LOGGER.info("patient successfully sasved");
 		return new ModelAndView("complete",model);
 	}	
+	
+	private PatientRepository determineRepository(boolean jdbc) {
+		if(jdbc) {
+			LOGGER.info("Using the JDBC repository implementation");
+			return patientRepositoryJdbc;
+		}
+		LOGGER.info("Using the MongoDB repository implementation");
+		return patientRepository;			
+	}
 	
 }

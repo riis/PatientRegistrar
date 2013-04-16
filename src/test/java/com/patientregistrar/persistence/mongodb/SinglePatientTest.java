@@ -35,19 +35,29 @@ public class SinglePatientTest {
 	private static final Logger LOGGER = Logger.getLogger(SinglePatientTest.class);
 	
 	@Resource
-	private PatientRepositoryMongo patientRepositoryJdbc;
+	private PatientRepository patientRepositoryJdbc;
 
 	@Resource
-	private PatientRepositoryMongo patientRepositoryMongo;	
+	private PatientRepository patientRepository;	
 	
 	/**
 	 * Tests persistence of one patient. Creation, updating, fetching by ID, and deletion.
 	 */
 	@Test
-	public void testOneSimplePatient() {
-		
-		PatientRepositoryMongo repository = patientRepositoryMongo; // TODO: this
-		
+	public void testOneSimplePatientMongoDB() {		
+		test(patientRepository);		
+	}
+
+	/**
+	 * Tests persistence of one patient. Creation, updating, fetching by ID, and deletion.
+	 */
+	@Test
+	public void testOneSimplePatientJdbc() {
+		test(patientRepositoryJdbc);
+	}
+	
+	private void test(PatientRepository repository) {
+
 		// create
 		Patient singlePatient = makeFakePatient();
 		repository.save(singlePatient);
@@ -74,7 +84,7 @@ public class SinglePatientTest {
 		// cleanup: delete
 		repository.delete(id);
 		assertFalse(repository.exists(id));
-		LOGGER.debug("Deleted patient with id: " + id);
+		LOGGER.debug("Deleted patient with id: " + id);		
 	}
 	
 }

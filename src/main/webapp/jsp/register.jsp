@@ -133,6 +133,7 @@
 	</div>
 	
 	<input type="submit" />
+	<input type="checkbox" name="jdbc" />JDBC
 
 </div>
 

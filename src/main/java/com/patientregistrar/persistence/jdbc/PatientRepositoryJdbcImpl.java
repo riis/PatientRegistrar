@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -23,10 +24,10 @@ import com.patientregistrar.domain.BasicPerson;
 import com.patientregistrar.domain.Employer;
 import com.patientregistrar.domain.Patient;
 import com.patientregistrar.domain.Person;
-import com.patientregistrar.persistence.mongodb.PatientRepositoryMongo;
+import com.patientregistrar.persistence.mongodb.PatientRepository;
 
 @Component("patientRepositoryJdbc")
-public class PatientRepositoryJdbcImpl implements PatientRepositoryMongo {
+public class PatientRepositoryJdbcImpl implements PatientRepository {
 
 	private static final String SQL_INSERT_EMERGENCY_CONTACT = "insert into emergencyContact( firstName, lastName, middleInitial, phoneNumber ) values (?,?,?,?);";
 
@@ -472,9 +473,13 @@ public class PatientRepositoryJdbcImpl implements PatientRepositoryMongo {
 	}
 	
 	@Override
-	public <S extends Patient> List<S> save(Iterable<S> arg0) {
-		throw new UnimplementedException();
-
+	public <S extends Patient> List<S> save(Iterable<S> iter) {
+		// BTW this method isn't fully implemented!
+		Iterator it = iter.iterator();
+		while(it.hasNext()) {
+			insert((Patient)it.next());
+		}
+		return null;
 	}
 
 	@Override
