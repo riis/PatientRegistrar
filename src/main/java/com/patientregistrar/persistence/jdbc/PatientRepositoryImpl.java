@@ -55,48 +55,6 @@ public class PatientRepositoryImpl implements PatientRepository {
 	@Autowired
 	private DataSource dataSource;
 	
-	public static class UnimplementedException extends RuntimeException {
-		
-	}
-	
-	@Override
-	public List<Patient> findAll() {
-		throw new UnimplementedException();
-	}
-
-	@Override
-	public List<Patient> findAll(Sort arg0) {
-		throw new UnimplementedException();
-	}
-
-	/*
-	@Override
-	public List<Patient> save(Iterable<? extends Patient> patients) {
-		List<Patient> savedPatients = new ArrayList<Patient>();
-		for(Patient patient : patients) {
-			savedPatients.add(save(patient));
-		}
-		return savedPatients;
-	}
-	
-	@Override
-	public List<Patient> save(Iterable<? extends Patient> patients) {
-		// TODO Auto-generated method stub
-		return super.save(patients);
-	}
-	^ both above are messed up		
-	*/
-
-	@Override
-	public Page<Patient> findAll(Pageable arg0) {
-		throw new UnimplementedException();
-	}
-
-	@Override
-	public long count() {
-		throw new UnimplementedException();
-	}
-
 	@Override
 	public void delete(String id) {		
 		try(Connection c = dataSource.getConnection(); 
@@ -171,11 +129,6 @@ public class PatientRepositoryImpl implements PatientRepository {
 		for(Patient patient : patients) {
 			delete(patient.getId());
 		}
-	}
-
-	@Override
-	public void deleteAll() {
-		throw new UnimplementedException();
 	}
 
 	@Override
@@ -488,19 +441,45 @@ public class PatientRepositoryImpl implements PatientRepository {
 		}		
 		return patients;
 	}
+
+	public static class UnimplementedException extends RuntimeException {
+		
+	}
 	
-	// THE BELOW ARE NEW
+	@Override
+	public List<Patient> findAll() {
+		throw new UnimplementedException();
+	}
+
+	@Override
+	public List<Patient> findAll(Sort arg0) {
+		throw new UnimplementedException();
+	}
+
+	@Override
+	public Page<Patient> findAll(Pageable arg0) {
+		throw new UnimplementedException();
+	}
+
+	@Override
+	public long count() {
+		throw new UnimplementedException();
+	}	
 	
 	@Override
 	public Iterable<Patient> findAll(Iterable<String> arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnimplementedException();
 	}
 	
 	@Override
 	public <S extends Patient> List<S> save(Iterable<S> arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnimplementedException();
+
 	}
 
+	@Override
+	public void deleteAll() {
+		throw new UnimplementedException();
+	}	
+	
 }
