@@ -83,6 +83,18 @@
 			<version>4.3.1.Final</version>
 		</dependency>            
 
+		<!-- rdbms -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.24</version>
+		</dependency>		
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>		
+
 		<!-- testing scope -->
 		<dependency>
 			<groupId>junit</groupId>

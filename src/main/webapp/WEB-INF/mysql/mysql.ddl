@@ -6,7 +6,7 @@ create table emergencyContact(
 emergencyContactid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 firstName varchar(35),
 lastName varchar(35),
-middleInitial char(1),
+middleInitial varchar(1),
 phoneNumber varchar(35)
 );
 
@@ -25,7 +25,7 @@ create table person (
 personid INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 firstName varchar(35),
 lastName varchar(35),
-middleInitial char(1),
+middleInitial varchar(1),
 phoneNumber varchar(35),
 dateOfBirth date,
 ssn varchar(35),

@@ -341,7 +341,13 @@ public class PatientRepositoryImpl implements PatientRepository {
 			
 			psEmergency.setString(1, patient.getEmergencyContact1().getFirstName());
 			psEmergency.setString(2, patient.getEmergencyContact1().getLastName());
-			psEmergency.setString(3, String.valueOf(patient.getEmergencyContact1().getMiddleInitial()));
+			
+			if(patient.getEmergencyContact1().getMiddleInitial() != null) {
+				psEmergency.setString(3, String.valueOf(patient.getEmergencyContact1().getMiddleInitial()));
+			} else {
+				psEmergency.setString(3, "");
+			}
+			
 			psEmergency.setString(4, patient.getEmergencyContact1().getPhoneNumber());
 			psEmergency.executeUpdate();
 			ResultSet rs = psEmergency.getGeneratedKeys();
@@ -351,7 +357,13 @@ public class PatientRepositoryImpl implements PatientRepository {
 			psEmergency.clearParameters();
 			psEmergency.setString(1, patient.getEmergencyContact2().getFirstName());
 			psEmergency.setString(2, patient.getEmergencyContact2().getLastName());
-			psEmergency.setString(3, String.valueOf(patient.getEmergencyContact2().getMiddleInitial()));
+			
+			if(patient.getEmergencyContact2().getMiddleInitial() != null) {
+				psEmergency.setString(3, String.valueOf(patient.getEmergencyContact2().getMiddleInitial()));
+			} else {
+				psEmergency.setString(3, "");
+			}			
+			
 			psEmergency.setString(4, patient.getEmergencyContact2().getPhoneNumber());
 			psEmergency.executeUpdate();
 			rs = psEmergency.getGeneratedKeys();
@@ -388,7 +400,13 @@ public class PatientRepositoryImpl implements PatientRepository {
 				
 				psPerson.setString(1, patient.getInsuranceSource().getFirstName());
 				psPerson.setString(2, patient.getInsuranceSource().getLastName());
-				psPerson.setString(3, String.valueOf(patient.getInsuranceSource().getMiddleInitial()));
+				
+				if(patient.getInsuranceSource().getMiddleInitial() != null) {
+					psPerson.setString(3, String.valueOf(patient.getInsuranceSource().getMiddleInitial()));
+				} else {
+					psPerson.setString(3, "");
+				}				
+				
 				psPerson.setString(4, patient.getInsuranceSource().getPhoneNumber());
 				psPerson.setDate(5, new java.sql.Date(patient.getInsuranceSource().getDateOfBirth().getTime()));
 				psPerson.setString(6, patient.getInsuranceSource().getSsn());
@@ -411,7 +429,13 @@ public class PatientRepositoryImpl implements PatientRepository {
 			psPerson.clearParameters();
 			psPerson.setString(1, patient.getFirstName());
 			psPerson.setString(2, patient.getLastName());
-			psPerson.setString(3, String.valueOf(patient.getMiddleInitial()));
+			
+			if(patient.getMiddleInitial() != null) {
+				psPerson.setString(3, String.valueOf(patient.getMiddleInitial()));
+			} else {
+				psPerson.setString(3, "");
+			}			
+			
 			psPerson.setString(4, patient.getPhoneNumber());
 			psPerson.setDate(5, new java.sql.Date(patient.getDateOfBirth().getTime()));
 			psPerson.setString(6, patient.getSsn());

@@ -28,16 +28,20 @@
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="mongo" />
 		<constructor-arg value="PatientRegistrar" />
-		<!-- 
+		
+		<!-- fire + forget settings below 
 		<property name="WriteResultChecking">
 			<util:constant static-field="org.springframework.data.mongodb.core.WriteResultChecking.EXCEPTION" />
 		</property>
-		 -->
+		<property name="writeConcern">
+			<util:constant static-field="com.mongodb.WriteConcern.SAFE" />
+		</property>		 
+		-->
 	</bean>
      
     <mongo:repositories base-package="com.patientregistrar.persistence.mongodb" />
     
-    <!-- spring & spring mvc -->
+    <!-- mvc -->
     <mvc:annotation-driven />
     
     <context:component-scan base-package="com.patientregistrar.control"/>

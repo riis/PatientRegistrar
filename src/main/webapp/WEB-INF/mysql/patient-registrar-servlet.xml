@@ -25,7 +25,6 @@
 		<property name="initialSize" value="5" />
 		<property name="maxActive" value="50" />
 		<property name="username" value="root" />				
-		<property name="password" value="password" />
 	</bean>	
     
     <!-- spring & spring mvc -->
