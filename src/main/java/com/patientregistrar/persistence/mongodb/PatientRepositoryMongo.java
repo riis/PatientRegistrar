@@ -18,7 +18,7 @@ import com.patientregistrar.domain.Patient;
  * </p>
  * @author Jeff Drost
  */
-public interface PatientRepository extends MongoRepository<Patient, String> {
+public interface PatientRepositoryMongo extends MongoRepository<Patient, String> {
 	
 	/**
 	 * <p>

@@ -23,10 +23,10 @@ import com.patientregistrar.domain.BasicPerson;
 import com.patientregistrar.domain.Employer;
 import com.patientregistrar.domain.Patient;
 import com.patientregistrar.domain.Person;
-import com.patientregistrar.persistence.mongodb.PatientRepository;
+import com.patientregistrar.persistence.mongodb.PatientRepositoryMongo;
 
-@Component
-public class PatientRepositoryImpl implements PatientRepository {
+@Component("patientRepositoryJdbc")
+public class PatientRepositoryJdbcImpl implements PatientRepositoryMongo {
 
 	private static final String SQL_INSERT_EMERGENCY_CONTACT = "insert into emergencyContact( firstName, lastName, middleInitial, phoneNumber ) values (?,?,?,?);";
 
@@ -50,7 +50,7 @@ public class PatientRepositoryImpl implements PatientRepository {
 	
 	private static final String SQL_FIND_BY_LASTNAME = "select personid from person where upper(lastname) like ?";
 	
-	private static final Logger LOGGER = Logger.getLogger(PatientRepositoryImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(PatientRepositoryJdbcImpl.class);
 
 	@Autowired
 	private DataSource dataSource;

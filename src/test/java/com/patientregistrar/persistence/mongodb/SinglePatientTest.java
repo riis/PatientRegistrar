@@ -7,11 +7,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -33,14 +34,19 @@ public class SinglePatientTest {
 
 	private static final Logger LOGGER = Logger.getLogger(SinglePatientTest.class);
 	
-	@Autowired
-	private PatientRepository repository;
+	@Resource
+	private PatientRepositoryMongo patientRepositoryJdbc;
 
+	@Resource
+	private PatientRepositoryMongo patientRepositoryMongo;	
+	
 	/**
 	 * Tests persistence of one patient. Creation, updating, fetching by ID, and deletion.
 	 */
 	@Test
 	public void testOneSimplePatient() {
+		
+		PatientRepositoryMongo repository = patientRepositoryMongo; // TODO: this
 		
 		// create
 		Patient singlePatient = makeFakePatient();

@@ -7,10 +7,11 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,8 +33,11 @@ public class MultiplePatientTest {
 
 	private static final Logger LOGGER = Logger.getLogger(MultiplePatientTest.class);
 	
-	@Autowired
-	private PatientRepository repository;
+	@Resource
+	private PatientRepositoryMongo patientRepositoryJdbc;
+
+	@Resource
+	private PatientRepositoryMongo patientRepositoryMongo;		
 		
 	/**
 	 * Tests finding, persistence, and deletion of multiple patients.
@@ -41,6 +45,9 @@ public class MultiplePatientTest {
 	 */
 	@Test
 	public void testMultiplePatients() {
+		
+		PatientRepositoryMongo repository = patientRepositoryMongo; // TODO: this
+		
 		List<Patient> patients = makeThreePatients();
 		repository.save(patients);
 		LOGGER.debug("Persisted three patients: " + patients);

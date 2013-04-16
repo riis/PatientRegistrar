@@ -1,9 +1,9 @@
 package com.patientregistrar.control;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.patientregistrar.domain.Patient;
-import com.patientregistrar.persistence.mongodb.PatientRepository;
+import com.patientregistrar.persistence.mongodb.PatientRepositoryMongo;
 
 /**
  * <p>
@@ -27,8 +27,11 @@ public class NewPatientEntryController {
 
 	private static final Logger LOGGER = Logger.getLogger(NewPatientEntryController.class);
 	
-	@Autowired
-	private PatientRepository repository;	
+	@Resource
+	private PatientRepositoryMongo patientRepositoryJdbc;
+
+	@Resource
+	private PatientRepositoryMongo patientRepositoryMongo;			
 	
 	@RequestMapping(value = "/register.htm",method = RequestMethod.GET)
 	public ModelAndView displayLandingPage() {
@@ -50,6 +53,7 @@ public class NewPatientEntryController {
 			return new ModelAndView("register",model);
 		}
 		
+		PatientRepositoryMongo repository = patientRepositoryMongo; // TODO: this
 		repository.save(patient);
 		LOGGER.info("patient successfully sasved");
 		return new ModelAndView("complete",model);
