@@ -12,7 +12,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * The class <code>Person</code> represents a person's information with some
  * sensitive data, such as ssn, employer, and address.
  * </p>
- * @author Jeff Drost
  */
 public class Person extends BasicPerson implements Serializable {
 

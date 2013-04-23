@@ -8,9 +8,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * <p>
- * The class <code>Address</code> represents a physical address.
+ * The class <code>Address</code> represents a physical US address.
  * </p>
- * @author Jeff Drost
  */
 public class Address implements Serializable {
 

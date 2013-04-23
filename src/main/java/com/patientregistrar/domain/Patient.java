@@ -10,9 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * <p>
- * The class <code>Patient</code> represents a walk-in patient at a doctor's office.
+ * The class <code>Patient</code> represents a patient at a doctor's office.
  * </p>
- * @author Jeff Drost
  */
 @Document(collection="patient")
 public class Patient extends Person implements Serializable {

@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -20,13 +22,9 @@ import com.patientregistrar.domain.Patient;
 
 /**
  * <p>
- * The integration test class <code>PatientRepositoryTest</code> shows how to use the Spring Data MongoDB API for a single domain object.
- * </p><p>
- * Specifically, it shows how to use 
- * <a href="http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/package-summary.html">Repository Interfaces</a> 
- * Spring has made available (instead of custom DAO implementations).
+ * The integration test class <code>SinglePatientTest</code> tests and displays how to use Spring Data's 
+ * repositories. Also tests the concrete JDBC implementation.
  * </p>
- * @author Jeff Drost
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/patient-registrar-servlet.xml"})
@@ -37,15 +35,16 @@ public class SinglePatientTest {
 	@Resource
 	private PatientRepository patientRepositoryJdbc;
 
-	@Resource
-	private PatientRepository patientRepository;	
+	@Autowired
+	@Qualifier("patientRepository")
+	private PatientRepository patientRepositoryMongoDB;	
 	
 	/**
 	 * Tests persistence of one patient. Creation, updating, fetching by ID, and deletion.
 	 */
 	@Test
 	public void testOneSimplePatientMongoDB() {		
-		test(patientRepository);		
+		test(patientRepositoryMongoDB);		
 	}
 
 	/**

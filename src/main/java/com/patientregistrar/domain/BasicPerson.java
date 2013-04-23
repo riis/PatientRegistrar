@@ -11,7 +11,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * The class <code>BasicPerson</code> represents some base information
  * about a person - names and phone numbers.
  * </p>
- * @author Jeff Drost
  */
 public class BasicPerson implements Serializable  {
 

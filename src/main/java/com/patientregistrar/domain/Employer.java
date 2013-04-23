@@ -10,7 +10,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * <p>
  * The class <code>Employer</code> represents an employer of a person.
  * </p>
- * @author Jeff Drost
  */
 public class Employer implements Serializable {
 

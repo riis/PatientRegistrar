@@ -16,7 +16,6 @@ import com.patientregistrar.domain.Patient;
  * interface, and adding the "repositories" element to a Spring beans context file, Spring will create a concrete
  * implementation of this interface that can be then used for persistence needs. 
  * </p>
- * @author Jeff Drost
  */
 public interface PatientRepository extends MongoRepository<Patient, String> {
 	

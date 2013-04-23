@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import com.patientregistrar.domain.Address;
@@ -26,6 +27,13 @@ import com.patientregistrar.domain.Patient;
 import com.patientregistrar.domain.Person;
 import com.patientregistrar.persistence.mongodb.PatientRepository;
 
+/**
+ * <p>
+ * The class <code>PatientRepositoryJdbcImpl</code> is a concrete JDBC implementation
+ * of <code>PatientRepository</code> / Spring Data's <code>CrudRepository</code>.  
+ * </p>
+ * @see CrudRepository
+ */
 @Component("patientRepositoryJdbc")
 public class PatientRepositoryJdbcImpl implements PatientRepository {
 

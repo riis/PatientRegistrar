@@ -11,7 +11,6 @@ import org.apache.commons.lang3.RandomStringUtils;
  * The class <code>DomainUtility</code> gives methods that create 
  * fake <code>Patient</code> data for testing purposes.
  * </p>
- * @author Jeff Drost
  */
 public class DomainUtility {
 

@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,10 +20,9 @@ import com.patientregistrar.persistence.mongodb.PatientRepository;
 
 /**
  * <p>
- * The class <code>NewPatientEntryController</code> handles requests
+ * The class <code>NewPatientEntryController</code> handles web requests
  * for new patient registration. 
  * </p>
- * @author Jeff Drost
  */
 @Controller
 public class NewPatientEntryController {
@@ -31,8 +32,9 @@ public class NewPatientEntryController {
 	@Resource
 	private PatientRepository patientRepositoryJdbc;
 
-	@Resource
-	private PatientRepository patientRepository;			
+	@Autowired
+	@Qualifier("patientRepository")
+	private PatientRepository patientRepositoryMongoDB;			
 	
 	@RequestMapping(value = "/register.htm",method = RequestMethod.GET)
 	public ModelAndView displayLandingPage() {
@@ -56,7 +58,7 @@ public class NewPatientEntryController {
 		}
 				
 		determineRepository(jdbc).save(patient);
-		LOGGER.info("patient successfully sasved");
+		LOGGER.info("patient successfully saved");
 		return new ModelAndView("complete",model);
 	}	
 	
@@ -66,7 +68,7 @@ public class NewPatientEntryController {
 			return patientRepositoryJdbc;
 		}
 		LOGGER.info("Using the MongoDB repository implementation");
-		return patientRepository;			
+		return patientRepositoryMongoDB;			
 	}
 	
 }
